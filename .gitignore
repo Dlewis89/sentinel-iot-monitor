@@ -1,0 +1,12 @@
+# PlatformIO
+.pio/
+
+# VS Code
+.vscode
+
+# Environment variables
+.env
+.env.*
+!.env.example
+secrets.h
+credentials.h
