@@ -1,18 +1,32 @@
-#include <Arduino.h>
+#include <WiFi.h>
 
-// put function declarations here:
-int myFunction(int, int);
+#include "secrets.h"
 
 void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+    Serial.begin(115200);
+    delay(2000);
+
+    Serial.println();
+    Serial.println("Connecting to Wi-Fi...");
+
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+
+    unsigned long startTime = millis();
+
+    while (WiFi.status() != WL_CONNECTED &&
+           millis() - startTime < 10000) {
+        Serial.println("Waiting for connection...");
+        delay(500);
+    }
+
+    if (WiFi.status() == WL_CONNECTED) {
+        Serial.println("Wi-Fi connected!");
+        Serial.print("IP Address: ");
+        Serial.println(WiFi.localIP());
+    } else {
+        Serial.println("Wi-Fi connection timed out.");
+    }
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-}
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
 }
