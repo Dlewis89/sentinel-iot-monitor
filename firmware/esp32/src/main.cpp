@@ -1,6 +1,8 @@
+#include <HTTPClient.h>
 #include <WiFi.h>
 #include "ArduinoJson.h"
 
+#include "config.h"
 #include "secrets.h"
 
 void setup() {
@@ -34,6 +36,7 @@ void loop() {
 
     if (millis() - lastTelemetryTime >= 5000) {
 
+        String payload;
         JsonDocument doc;
         wl_status_t wifiStatus = WiFi.status();
 
@@ -41,14 +44,31 @@ void loop() {
         doc["free_heap_bytes"] = ESP.getFreeHeap();
         doc["wifi_connected"] = (wifiStatus == WL_CONNECTED);
 
-        if (wifiStatus== WL_CONNECTED) {
+        if (wifiStatus == WL_CONNECTED) {
             doc["wifi_rssi_dbm"] = WiFi.RSSI();
         } else {
             doc["wifi_rssi_dbm"] = nullptr;
         }
 
-        serializeJson(doc, Serial);
+        serializeJson(doc, payload);
+
+        Serial.println(payload);
         Serial.println();
+
+        if (wifiStatus == WL_CONNECTED) {
+
+            HTTPClient client;
+
+            client.begin(TELEMETRY_ENDPOINT);
+            client.addHeader("Content-Type", "application/json");
+            client.setConnectTimeout(3000);
+            client.setTimeout(3000);
+            int respStatus = client.POST(payload);
+            client.end();
+
+            Serial.printf("HTTP Response Code: %d\n", respStatus);
+
+        }
 
         lastTelemetryTime = millis();
     }
