@@ -1,4 +1,5 @@
 #include <WiFi.h>
+#include "ArduinoJson.h"
 
 #include "secrets.h"
 
@@ -30,16 +31,24 @@ void setup() {
 void loop() {
 
     static unsigned long lastTelemetryTime = millis();
-    
-    if (millis() - lastTelemetryTime >= 5000) {
-        Serial.printf("Device Uptime: %lu seconds\n", millis() / 1000);
-        Serial.printf("Free Heap: %lu bytes\n", ESP.getFreeHeap());
 
-        if (WiFi.status() == WL_CONNECTED) {
-            Serial.printf("Wifi Signal: %d dBm\n", WiFi.RSSI());
+    if (millis() - lastTelemetryTime >= 5000) {
+
+        JsonDocument doc;
+        wl_status_t wifiStatus = WiFi.status();
+
+        doc["uptime_seconds"] = millis() / 1000;
+        doc["free_heap_bytes"] = ESP.getFreeHeap();
+        doc["wifi_connected"] = (wifiStatus == WL_CONNECTED);
+
+        if (wifiStatus== WL_CONNECTED) {
+            doc["wifi_rssi_dbm"] = WiFi.RSSI();
         } else {
-            Serial.println("Wifi Status: Disconnected");
+            doc["wifi_rssi_dbm"] = nullptr;
         }
+
+        serializeJson(doc, Serial);
+        Serial.println();
 
         lastTelemetryTime = millis();
     }
