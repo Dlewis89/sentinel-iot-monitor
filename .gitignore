@@ -10,3 +10,6 @@
 !.env.example
 secrets.h
 credentials.h
+
+# Java Class
+*.class
