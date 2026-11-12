@@ -14,6 +14,7 @@ monitors EPS32 microcontrollers
 - JSON
 - Java 17
 - PlatformIO
+- Apache Maven
 
 ## Architecture
 
@@ -55,20 +56,24 @@ Example JSON payload:
 
 The backend is currently implemented using Java 17 and the JDK built-in HttpServer API.
 
+Apache Maven is used to compile and package the application into an executable JAR.
+
 ## Requirements
 
 - Java Development Kit (JDK) 17
+- Apache Maven
 
 ## Running the Backend
 
 From the repository root, complile the Java source files:
 
 ```
-javac backend/src/*.java
+cd backend
+mvn clean package
 ```
 Start the HTTP server:
 ```
-java -p backend/src Main
+java -jar target/sentinel-backend-0.1.0-SNAPSHOT.jar
 ```
 The server listens on port 8080.
 
@@ -85,8 +90,8 @@ Requests using unsupported HTTP methods receive HTTP 405 Method Not Allowed.
 With the server running execute:
 
 ```
-curl -i http:/localhost:8080/telemtry \
-    -H "Content-Type: application/json"
+curl -i http:/localhost:8080/telemetry \
+    -H "Content-Type: application/json" \
     -d '{"uptime_seconds":32,"free_heap_bytes":125749,"wifi_connected":true,"wifi_rssi_dbm":-36}'
 ```
 
