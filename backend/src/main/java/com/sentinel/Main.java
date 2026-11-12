@@ -1,3 +1,5 @@
+package com.sentinel;
+
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;

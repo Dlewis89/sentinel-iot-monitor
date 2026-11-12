@@ -3,6 +3,7 @@
 
 # VS Code
 .vscode
+*workspace
 
 # Environment variables
 .env
@@ -13,3 +14,4 @@ credentials.h
 
 # Java Class
 *.class
+/backend/target
